@@ -37,7 +37,7 @@ server/ # Node.js + Express - Backend
 **Prerequisites**
 
 - Node.js v14+
-- Google Cloud project with OAuth 2.0 Client ID/Secret
+- Auth0 Domain and Client ID/Secret
 - Add test user (Gmail) in Google OAuth consent screen
 
 **Installation**
