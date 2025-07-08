@@ -4,10 +4,12 @@ import UBMediaUpdates from './pages/UBMediaUpdates';
 import UBMOperations from './pages/UBMOperations';
 import AuthRouteGuard from './components/AuthRouteGuard';
 import HomeDashboard from './pages/HomeDashboard';
+import SessionExpiryDialog from './components/SessionExpiryDialog';
 
 const App = () => (
  <Router>
   <>
+  <SessionExpiryDialog/>
     <Navbar />   {/* Now within Router context */}
     <Routes>
       <Route path="/" element={<HomeDashboard />} />

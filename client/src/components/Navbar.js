@@ -7,10 +7,10 @@ const Navbar = () => {
   return (
     <nav style={styles.nav}>
       <div>
-        <Link to="/" style={styles.link}> Home</Link>
+        <Link to="/" style={styles.link}> Home </Link>
         <Link to="/UBMediaUpdates" style={styles.link}> Updates </Link>
         {isAuthenticated && (
-          <Link to="/UBMOperations" style={styles.link}> Operationa Update </Link>
+          <Link to="/UBMOperations" style={styles.link}> Operations Update </Link>
         )}
       </div>
 
