@@ -15,12 +15,19 @@ app.use(
 // Helper: Get Management API token
 async function getManagementToken() {
   try {
-    const response = await axios.post(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
-      client_id: process.env.AUTH0_MGMT_CLIENT_ID,
-      client_secret: process.env.AUTH0_MGMT_CLIENT_SECRET,
-      audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
-      grant_type: "client_credentials",
-    });
+    const options = {
+      method: "POST",
+      url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      data: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: process.env.AUTH0_MGMT_CLIENT_ID,
+        client_secret: process.env.AUTH0_MGMT_CLIENT_SECRET,
+        audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+      }),
+    };
+
+    const response = await axios.request(options);
     console.log("im here", response.data.access_token);
     return response.data.access_token;
   } catch (err) {
