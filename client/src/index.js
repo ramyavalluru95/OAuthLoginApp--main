@@ -10,7 +10,6 @@ root.render(
     authorizationParams={{
       redirect_uri: window.location.origin,
     }}
-    audience="https://dev-w8tgx5qfz8u3h7if.us.auth0.com/api/v2/"
   >
     <App />
   </Auth0Provider>

@@ -28,7 +28,6 @@ async function getManagementToken() {
     };
 
     const response = await axios.request(options);
-    console.log("im here", response.data.access_token);
     return response.data.access_token;
   } catch (err) {
     console.error("Error fetching management token:", err.response?.data || err.message);
@@ -41,11 +40,11 @@ app.get("/api/user/:userId", async (req, res) => {
   try {
     const token = await getManagementToken();
     const userId = req.params.userId;
-    console.log({ token, userId });
     const userRes = await axios.get(`https://${process.env.AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userId)}`, { headers: { Authorization: `Bearer ${token}` } });
     const { last_login, logins_count, last_ip, ...rest } = userRes.data;
     res.json({ last_login, logins_count, last_ip, ...rest });
   } catch (err) {
+    console.error("Error fetching user details:", err.response?.data || err.message);
     res.status(500).json({ error: err.message });
   }
 });
