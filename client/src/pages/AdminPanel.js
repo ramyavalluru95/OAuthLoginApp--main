@@ -1,17 +1,15 @@
-import React from 'react';
+import React from "react";
+import EmployeeForm from "../components/employee/EmployeeForm";
+import EmployeeTable from "../components/employee/EmployeeTable";
 
 const AdminPanel = () => {
   return (
     <div style={styles.container}>
-      <h1>🛠 Admin Dashboard</h1>
+      <h2>🛠 Admin Dashboard</h2>
       <p>Welcome to the Admin section. Manage everything from user access to system logs.</p>
 
-      <ul>
-        <li>Manage Roles & Permissions</li>
-        <li>System Audit Logs</li>
-        <li>Backup & Recovery</li>
-        <li>Configuration Settings</li>
-      </ul>
+      <EmployeeForm />
+      <EmployeeTable />
     </div>
   );
 };
@@ -19,7 +17,7 @@ const AdminPanel = () => {
 const styles = {
   container: {
     padding: 24,
-    fontFamily: 'Arial, sans-serif',
+    fontFamily: "Arial, sans-serif",
   },
 };
 

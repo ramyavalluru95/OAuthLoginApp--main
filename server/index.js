@@ -42,14 +42,11 @@ app.get("/api/user/:userId", async (req, res) => {
     const token = await getManagementToken();
     const userId = req.params.userId;
 
-    const userRes = await axios.get(
-      `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userId)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const userRes = await axios.get(`https://${process.env.AUTH0_DOMAIN}/api/v2/users/${encodeURIComponent(userId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const { last_login, logins_count, last_ip, ...rest } = userRes.data;
     res.json({ last_login, logins_count, last_ip, ...rest });
@@ -60,7 +57,7 @@ app.get("/api/user/:userId", async (req, res) => {
 });
 
 // ✅ Role validation middleware (optional backend use)
-const jwt = require("express-jwt");
+const { expressjwt: jwt } = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
 
 const checkJwt = jwt({
