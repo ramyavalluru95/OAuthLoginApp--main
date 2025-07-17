@@ -1,17 +1,28 @@
 // ✅ Updated backend to support Auth0 Management API role-based token inspection
-const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import axios from "axios";
+import { expressjwt as jwt } from "express-jwt";
+import jwksRsa from "jwks-rsa";
+import dotenv from "dotenv";
+import Routes from "./routes/index.js";
+import { run_database } from "./schema/database.js";
+import mongoose from "mongoose";
+
+dotenv.config();
+run_database(); // mongo db configuration
 
 const app = express();
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
   })
 );
+
+app.use(Routes);
 
 // ✅ Helper: Get Management API token
 async function getManagementToken() {
@@ -57,9 +68,6 @@ app.get("/api/user/:userId", async (req, res) => {
 });
 
 // ✅ Role validation middleware (optional backend use)
-const { expressjwt: jwt } = require("express-jwt");
-const jwksRsa = require("jwks-rsa");
-
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,
@@ -96,4 +104,18 @@ app.get("/api/management", checkJwt, requireRole(["manager", "admin"]), (req, re
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
+
+process.on("SIGTERM", async (signal) => {
+  if (!signal) return;
+  await mongoose.stop();
+  process.kill(process.pid, "SIGINT");
+  process.exit(1);
+});
+
+process.on("SIGINT", async (signal) => {
+  if (!signal) return;
+  await mongoose.stop();
+  process.kill(process.pid, "SIGINT");
+  process.exit(1);
 });
