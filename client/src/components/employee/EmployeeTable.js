@@ -2,6 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 const columns = [
   { field: "id", headerName: "ID", flex: 0.5, minWidth: 70 },
@@ -26,6 +27,8 @@ const rows = [
 ];
 
 export default function EmployeeTable() {
+  // const rows = useSelector((state) => state.employee);
+
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
@@ -52,6 +55,19 @@ export default function EmployeeTable() {
           checkboxSelection
           disableRowSelectionOnClick
           autoHeight
+          processRowUpdate={async (newRow, oldRow) => {
+            try {
+              await axios.put(`http://localhost:5000/api/employee/${newRow.id}`, newRow);
+              return newRow;
+            } catch (error) {
+              console.error("Failed to update employee:", error);
+              return oldRow;
+            }
+          }}
+          onProcessRowUpdateError={(error) => {
+            console.error("Row update error:", error);
+          }}
+          experimentalFeatures={{ newEditingApi: true }}
         />
       </Box>
     </React.Fragment>
