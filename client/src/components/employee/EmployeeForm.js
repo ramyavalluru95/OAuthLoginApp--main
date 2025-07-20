@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Stack } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { addEmployee } from "../../reducers/employee.reducer";
-import axios from "axios";
 
-const EmployeeForm = () => {
+const EmployeeForm = ({ createEmployee, refetch }) => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -14,9 +11,19 @@ const EmployeeForm = () => {
 
   const [errors, setErrors] = useState({});
   const [openForm, setOpenForm] = useState(false);
-  const dispatch = useDispatch();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Only allow letters for firstName and lastName
+    if ((name === "firstName" || name === "lastName") && /[^a-zA-Z\s]/.test(value)) {
+      return; // Ignore input if it contains invalid characters
+    }
+    // Only allow numbers for phoneNumber
+    if (name === "phoneNumber" && /[^0-9]/.test(value)) {
+      return; // Ignore input if it contains invalid characters
+    }
+    // Update form state
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -33,33 +40,15 @@ const EmployeeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      const { status } = await axios.post(`http://localhost:5000/api/v1/employee`, form, {
-        headers: { "Content-Type": "application/json" },
+      await createEmployee(form).unwrap();
+      refetch();
+      setErrors({});
+      setForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
       });
-
-      if (status === 201) {
-        axios
-          .get("http://localhost:5000/api/v1/employees")
-          .then((response) => {
-            if (response.data.success) {
-              setForm({
-                firstName: "",
-                lastName: "",
-                email: "",
-                phoneNumber: "",
-              });
-              dispatch(addEmployee(response.data.employees));
-              setErrors({});
-            } else {
-              console.error("Error fetching employees:", response.data.message);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching employees:", error.message);
-          });
-      } else {
-        console.error("Error adding employee:", status);
-      }
     }
   };
 
@@ -77,10 +66,20 @@ const EmployeeForm = () => {
       {openForm && (
         <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 900, mx: "auto", mt: 4 }}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <TextField label="First Name" name="firstName" value={form.firstName} onChange={handleChange} error={!!errors.firstName} helperText={errors.firstName} required />
+            <TextField type="string" label="First Name" name="firstName" value={form.firstName} onChange={handleChange} error={!!errors.firstName} helperText={errors.firstName} required />
             <TextField label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} error={!!errors.lastName} helperText={errors.lastName} required />
             <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} required />
-            <TextField label="Phone Number" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} error={!!errors.phoneNumber} helperText={errors.phoneNumber} required />
+            <TextField
+              type="number"
+              label="Phone Number"
+              name="phoneNumber"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              error={!!errors.phoneNumber}
+              maxLength={10}
+              helperText={errors.phoneNumber}
+              required
+            />
             <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
               Submit
             </Button>
