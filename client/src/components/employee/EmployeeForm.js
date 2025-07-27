@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Stack } from "@mui/material";
 import { getUpperCase, validateEmail } from "../../constants/helper";
 
-const EmployeeForm = ({ createEmployee, refetch }) => {
+const EmployeeForm = ({ createEmployee }) => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -48,7 +48,6 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
     e.preventDefault();
     if (validate()) {
       await createEmployee(form).unwrap();
-      refetch();
       setErrors({});
       setForm({
         firstName: "",

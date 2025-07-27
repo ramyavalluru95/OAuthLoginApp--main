@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const UBMOperations = () => {
   const { user } = useAuth0();
-  const { data, refetch } = useGetUsersQuery();
+  const { data } = useGetUsersQuery();
   const [createUser] = useCreateUserMutation();
   const [deleteUsers] = useDeleteUsersMutation();
   const [selectedUserIds, setSelectedUserIds] = useState([]);
@@ -15,7 +15,6 @@ const UBMOperations = () => {
     if (selectedUserIds?.ids?.size === 0) return;
     try {
       await deleteUsers({ ids: Array.from(selectedUserIds?.ids) }).unwrap();
-      refetch();
       setSelectedUserIds([]);
     } catch (err) {
       console.error("Delete failed:", err);
@@ -28,7 +27,7 @@ const UBMOperations = () => {
       <ul>
         <li> User List:</li>
       </ul>
-      <UserForm createUser={createUser} refetch={refetch} />
+      <UserForm createUser={createUser} />
       <UserTable data={data} selectedUserIds={selectedUserIds} setSelectedUserIds={setSelectedUserIds} handleDeleteSelected={handleDeleteSelected} />
     </div>
   );

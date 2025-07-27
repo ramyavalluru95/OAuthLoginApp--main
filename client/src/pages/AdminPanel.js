@@ -5,7 +5,7 @@ import { useCreateEmployeeMutation, useDeleteEmployeesMutation, useGetEmployeesQ
 import { useState } from "react";
 
 const AdminPanel = () => {
-  const { data, refetch } = useGetEmployeesQuery();
+  const { data } = useGetEmployeesQuery();
   const [createEmployee] = useCreateEmployeeMutation();
   const [deleteEmployees] = useDeleteEmployeesMutation();
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
@@ -14,7 +14,6 @@ const AdminPanel = () => {
     if (selectedEmployeeIds?.ids?.size === 0) return;
     try {
       await deleteEmployees({ ids: Array.from(selectedEmployeeIds.ids) }).unwrap();
-      refetch();
       setSelectedEmployeeIds([]);
     } catch (err) {
       console.error("Delete failed:", err);
@@ -26,7 +25,7 @@ const AdminPanel = () => {
       <h2>🛠 Admin Dashboard</h2>
       <p>Welcome to the Admin section. Manage everything from user access to system logs.</p>
 
-      <EmployeeForm createEmployee={createEmployee} refetch={refetch} />
+      <EmployeeForm createEmployee={createEmployee} />
       <EmployeeTable data={data} selectedEmployeeIds={selectedEmployeeIds} setSelectedEmployeeIds={setSelectedEmployeeIds} handleDeleteSelected={handleDeleteSelected} />
     </div>
   );

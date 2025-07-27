@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Stack, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import { getUpperCase, validateEmail } from "../../constants/helper";
 
-const UserForm = ({ createUser, refetch }) => {
+const UserForm = ({ createUser }) => {
   const [form, setForm] = useState({
     userName: "",
     userGroup: "",
@@ -47,7 +47,6 @@ const UserForm = ({ createUser, refetch }) => {
     e.preventDefault();
     if (validate()) {
       await createUser(form).unwrap();
-      refetch();
       setErrors({});
       setForm({
         userName: "",
