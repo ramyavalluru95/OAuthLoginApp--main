@@ -18,7 +18,7 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
     const { value } = e;
 
     // Only allow letters for firstName and lastName
-    if ((name === "firstName" || name === "lastName") && /[^a-zA-Z\s]/.test(value)) {
+    if ((name === "firstName" || name === "lastName") && /[^a-zA-Z\s]/.test(targetValue)) {
       return; // Ignore input if it contains invalid characters
     }
     // Only allow numbers for phoneNumber
