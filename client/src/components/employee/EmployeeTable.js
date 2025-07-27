@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button, Grid } from "@mui/material";
 import { isEqual } from "lodash";
+import usePaginationModel from "../../hooks/userPagination";
 
 const columns = [
   { field: "firstName", headerName: "First Name", flex: 1, minWidth: 120, editable: true },
@@ -12,6 +13,8 @@ const columns = [
 ];
 
 export default function EmployeeTable({ data, setSelectedEmployeeIds, handleDeleteSelected }) {
+  const { paginationModel, handlePaginationChange } = usePaginationModel();
+
   const handleProcessRowUpdate = (newRow, oldRow) => {
     // Add edited row to selectedUserIds if not already there
     if (!isEqual(newRow, oldRow)) {
@@ -56,7 +59,9 @@ export default function EmployeeTable({ data, setSelectedEmployeeIds, handleDele
               },
             },
           }}
-          pageSizeOptions={[5]}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationChange}
+          pageSizeOptions={[5, 10, 25, 50, 100]} // Items per page dropdown
           checkboxSelection
           disableRowSelectionOnClick
           autoHeight
