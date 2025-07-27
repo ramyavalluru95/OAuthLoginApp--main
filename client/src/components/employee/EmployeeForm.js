@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Stack } from "@mui/material";
+import { getUpperCase, validateEmail } from "../../constants/helper";
 
 const EmployeeForm = ({ createEmployee, refetch }) => {
   const [form, setForm] = useState({
@@ -13,18 +14,23 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
   const [openForm, setOpenForm] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value: targetValue } = e.target;
+    const { value } = e;
 
     // Only allow letters for firstName and lastName
     if ((name === "firstName" || name === "lastName") && /[^a-zA-Z\s]/.test(value)) {
       return; // Ignore input if it contains invalid characters
     }
     // Only allow numbers for phoneNumber
-    if (name === "phoneNumber" && /[^0-9]/.test(value)) {
+    if (name === "phoneNumber" && /[^0-9]/.test(targetValue)) {
       return; // Ignore input if it contains invalid characters
     }
+
+    if (name === "phoneNumber" && targetValue?.length > 10) {
+      return;
+    }
     // Update form state
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({ ...form, [name]: value || targetValue });
   };
 
   const validate = () => {
@@ -32,6 +38,7 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
     temp.firstName = form.firstName ? "" : "First name is required";
     temp.lastName = form.lastName ? "" : "Last name is required";
     temp.email = form.email ? "" : "Email is required";
+    temp.email = validateEmail(form.email) && !temp.email ? "" : "Email is not valid";
     temp.phoneNumber = form.phoneNumber ? "" : "Phone number is required";
     setErrors(temp);
     return Object.values(temp).every((x) => x === "");
@@ -66,8 +73,25 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
       {openForm && (
         <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 900, mx: "auto", mt: 4 }}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <TextField type="string" label="First Name" name="firstName" value={form.firstName} onChange={handleChange} error={!!errors.firstName} helperText={errors.firstName} required />
-            <TextField label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} error={!!errors.lastName} helperText={errors.lastName} required />
+            <TextField
+              type="string"
+              label="First Name"
+              name="firstName"
+              value={form.firstName}
+              onChange={(e) => handleChange({ ...e, value: getUpperCase(e.target.value) })}
+              error={!!errors.firstName}
+              helperText={errors.firstName}
+              required
+            />
+            <TextField
+              label="Last Name"
+              name="lastName"
+              value={form.lastName}
+              onChange={(e) => handleChange({ ...e, value: getUpperCase(e.target.value) })}
+              error={!!errors.lastName}
+              helperText={errors.lastName}
+              required
+            />
             <TextField label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} required />
             <TextField
               type="number"
@@ -76,10 +100,25 @@ const EmployeeForm = ({ createEmployee, refetch }) => {
               value={form.phoneNumber}
               onChange={handleChange}
               error={!!errors.phoneNumber}
-              maxLength={10}
+              inputProps={{ maxLength: 10 }}
               helperText={errors.phoneNumber}
               required
             />
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                setForm({
+                  firstName: "",
+                  lastName: "",
+                  email: "",
+                  phoneNumber: "",
+                });
+                setErrors({});
+              }}
+            >
+              Reset
+            </Button>
             <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
               Submit
             </Button>

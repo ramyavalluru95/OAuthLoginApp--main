@@ -6,6 +6,12 @@ import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+const styles = {
+  container: {
+    fontFamily: "Arial, sans-serif",
+  },
+};
+
 root.render(
   <Auth0Provider
     domain="dev-w8tgx5qfz8u3h7if.us.auth0.com"
@@ -17,7 +23,9 @@ root.render(
     }}
   >
     <Provider store={store}>
-      <App />
+      <div style={styles.container}>
+        <App />
+      </div>
     </Provider>
   </Auth0Provider>
 );

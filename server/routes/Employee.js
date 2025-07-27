@@ -15,7 +15,6 @@ Router.get("/employees", (req, res) => {
 
 // create Employee
 Router.post("/employee", async (req, res) => {
-  console.log("Creating new employee...", req.body);
   const { firstName, lastName, phoneNumber, email } = req?.body;
 
   // check if menu already exists for date. if available throw error
@@ -40,8 +39,20 @@ Router.post("/employee", async (req, res) => {
     .then((employee) => res.status(201).json({ success: true, employee }))
     .catch((err) => {
       console.error(`Exception in fetching employees POST- ${err}.`);
-      res.status(500).json({ success: false, message: `Error in inserting menu.` });
+      res.status(500).json({ success: false, message: `Error in inserting employee.` });
     });
+});
+
+Router.post("/delete-employees", async (req, res) => {
+  const { ids } = req.body;
+  if (!Array.isArray(ids)) return res.status(400).send("Invalid input");
+
+  try {
+    await EmployeeModel.deleteMany({ _id: { $in: ids } });
+    res.status(200).json({ message: "Employees deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 export default Router;

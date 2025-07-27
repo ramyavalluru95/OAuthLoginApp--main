@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const HomeDashboard = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || !user) return;
@@ -23,13 +25,18 @@ const HomeDashboard = () => {
           logins_count: res.data.logins_count,
           last_ip: res.data.last_ip,
         });
+        setIsLoading(false);
       } catch (err) {
         console.error("Failed to fetch user profile from backend:", err);
       }
     };
+    if (!profile) {
+      setIsLoading(true);
+      fetchProfileFromBackend();
+    }
+  }, [isAuthenticated, user, getAccessTokenSilently, profile]);
 
-    fetchProfileFromBackend();
-  }, [isAuthenticated, user, getAccessTokenSilently]);
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div style={{ padding: 20 }}>

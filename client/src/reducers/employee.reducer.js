@@ -1,5 +1,4 @@
 import { fetchBaseQuery, createApi } from "@reduxjs/toolkit/query/react";
-// import employeeReducer from "./reducers/employee.reducer"; // adjust path if needed
 
 export const employeeStore = createApi({
   reducerPath: "employee",
@@ -11,7 +10,10 @@ export const employeeStore = createApi({
     createEmployee: builder.mutation({
       query: (employee) => ({ url: "/api/v1/employee", method: "POST", body: employee }),
     }),
+    deleteEmployees: builder.mutation({
+      query: (employees) => ({ url: "/api/v1/delete-employees", method: "POST", body: employees }),
+    }),
   }),
 });
 
-export const { useGetEmployeesQuery, useCreateEmployeeMutation } = employeeStore;
+export const { useGetEmployeesQuery, useCreateEmployeeMutation, useDeleteEmployeesMutation } = employeeStore;
