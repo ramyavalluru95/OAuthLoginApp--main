@@ -24,9 +24,6 @@ const UBMOperations = () => {
     <div style={{ padding: 20 }}>
       <h2>⚙ UBM Operations</h2>
       <p>Welcome, {user.name}</p>
-      <ul>
-        <li> User List:</li>
-      </ul>
       <UserForm createUser={createUser} />
       <UserTable data={data} selectedUserIds={selectedUserIds} setSelectedUserIds={setSelectedUserIds} handleDeleteSelected={handleDeleteSelected} />
     </div>
